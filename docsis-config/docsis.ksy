@@ -80,6 +80,42 @@ enums:
   16: icmpv4_icmpv6_packet_classification
   17: mpls_classification_encoding
   43: vendor_specific
+
+ us_service_flow:
+  1: us_service_flow_ref
+  2: us_service_flow_id
+  3: service_identifier
+  4: service_class_name
+  6: qos_param_set_type
+  7: traffic_priority
+  8: max_rate_sustained
+  9: max_traffic_burst
+  10: min_reserved_rate
+  11: min_res_packet_size
+  12: act_qos_params_timeout
+  13: adm_qos_params_timeout
+  14: max_concatenated_burst
+  15: scheduling_type
+  16: request_or_tx_policy
+  17: nominal_poll_interval
+  18: tolerated_poll_jitter
+  19: unsolicited_grant_size
+  20: nominal_grant_interval
+  21: tolerated_grant_jitter
+  22: grants_per_interval
+  23: ip_tos_overwrite
+  26: multiplier_to_no_of_bytes_requested
+  27: upstream_traffic_peak_rate
+  31: sf_required_attribute_mask
+  32: sf_forbidden_attribute_mask
+  33: sf_attribute_aggregation_rule_mask
+  34: application_identifier
+  35: buffer_control
+  36: upstream_aggregate_sf_reference
+  37: upstream_mes_preference
+  40: aqm_encodings
+  41: data_rate_unit_setting
+  43: vendor_specific
  
  ip_packet_classifier:
   1: ip_tos
@@ -124,6 +160,7 @@ types:
        'tlv_types::baseline_privacy': tlvs_baseline_privacy
        'tlv_types::us_packet_class': tlvs_packet_class
        'tlv_types::ds_packet_class': tlvs_packet_class
+       'tlv_types::us_service_flow': tlvs_us_service_flow
        'tlv_types::snmp_mib_object': tlv_snmp
      if: tlv_type != tlv_types::pad
 
@@ -143,6 +180,12 @@ types:
   seq:
    - id: tlvs
      type: tlv_ip_packet_classifier
+     repeat: eos
+
+ tlvs_us_service_flow:
+  seq:
+   - id: tlvs
+     type: tlv_us_service_flow
      repeat: eos
 
  tlv_baseline_privacy:
@@ -182,6 +225,23 @@ types:
      type: u1
    - id: value
      size: length
+
+ tlv_us_service_flow:
+  seq:
+   - id: tlv_type
+     type: u1
+     enum: us_service_flow
+   - id: length
+     type: u1
+   - id: value
+     size: length
+     type:
+      switch-on: tlv_type
+      cases:
+       'us_service_flow::us_service_flow_ref': u2be
+       'us_service_flow::qos_param_set_type': u1
+       'us_service_flow::scheduling_type': u1
+       'us_service_flow::max_rate_sustained': u4be
 
  tlv_snmp:
   seq:

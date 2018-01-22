@@ -44,6 +44,42 @@ class Docsis(KaitaiStruct):
         mpls_classification_encoding = 17
         vendor_specific = 43
 
+    class UsServiceFlow(Enum):
+        us_service_flow_ref = 1
+        us_service_flow_id = 2
+        service_identifier = 3
+        service_class_name = 4
+        qos_param_set_type = 6
+        traffic_priority = 7
+        max_rate_sustained = 8
+        max_traffic_burst = 9
+        min_reserved_rate = 10
+        min_res_packet_size = 11
+        act_qos_params_timeout = 12
+        adm_qos_params_timeout = 13
+        max_concatenated_burst = 14
+        scheduling_type = 15
+        request_or_tx_policy = 16
+        nominal_poll_interval = 17
+        tolerated_poll_jitter = 18
+        unsolicited_grant_size = 19
+        nominal_grant_interval = 20
+        tolerated_grant_jitter = 21
+        grants_per_interval = 22
+        ip_tos_overwrite = 23
+        multiplier_to_no_of_bytes_requested = 26
+        upstream_traffic_peak_rate = 27
+        sf_required_attribute_mask = 31
+        sf_forbidden_attribute_mask = 32
+        sf_attribute_aggregation_rule_mask = 33
+        application_identifier = 34
+        buffer_control = 35
+        upstream_aggregate_sf_reference = 36
+        upstream_mes_preference = 37
+        aqm_encodings = 40
+        data_rate_unit_setting = 41
+        vendor_specific = 43
+
     class Ieee802Classifier(Enum):
         user_priority = 1
         vlan_id = 2
@@ -124,6 +160,17 @@ class Docsis(KaitaiStruct):
             self.value = self._io.read_bytes(self.length2)
 
 
+    class TlvsUsServiceFlow(KaitaiStruct):
+        def __init__(self, _io, _parent=None, _root=None):
+            self._io = _io
+            self._parent = _parent
+            self._root = _root if _root else self
+            self.tlvs = []
+            while not self._io.is_eof():
+                self.tlvs.append(self._root.TlvUsServiceFlow(self._io, self, self._root))
+
+
+
     class TlvIpPacketClassifier(KaitaiStruct):
         def __init__(self, _io, _parent=None, _root=None):
             self._io = _io
@@ -148,7 +195,11 @@ class Docsis(KaitaiStruct):
 
             if self.tlv_type != self._root.TlvTypes.pad:
                 _on = self.tlv_type
-                if _on == self._root.TlvTypes.snmp_mib_object:
+                if _on == self._root.TlvTypes.us_service_flow:
+                    self._raw_tlv_value = self._io.read_bytes(self.length)
+                    io = KaitaiStream(BytesIO(self._raw_tlv_value))
+                    self.tlv_value = self._root.TlvsUsServiceFlow(io, self, self._root)
+                elif _on == self._root.TlvTypes.snmp_mib_object:
                     self._raw_tlv_value = self._io.read_bytes(self.length)
                     io = KaitaiStream(BytesIO(self._raw_tlv_value))
                     self.tlv_value = self._root.TlvSnmp(io, self, self._root)
@@ -201,6 +252,26 @@ class Docsis(KaitaiStruct):
             while not self._io.is_eof():
                 self.tlvs.append(self._root.TlvBaselinePrivacy(self._io, self, self._root))
 
+
+
+    class TlvUsServiceFlow(KaitaiStruct):
+        def __init__(self, _io, _parent=None, _root=None):
+            self._io = _io
+            self._parent = _parent
+            self._root = _root if _root else self
+            self.tlv_type = self._root.UsServiceFlow(self._io.read_u1())
+            self.length = self._io.read_u1()
+            _on = self.tlv_type
+            if _on == self._root.UsServiceFlow.qos_param_set_type:
+                self.value = self._io.read_u1()
+            elif _on == self._root.UsServiceFlow.max_rate_sustained:
+                self.value = self._io.read_u4be()
+            elif _on == self._root.UsServiceFlow.us_service_flow_ref:
+                self.value = self._io.read_u2be()
+            elif _on == self._root.UsServiceFlow.scheduling_type:
+                self.value = self._io.read_u1()
+            else:
+                self.value = self._io.read_bytes(self.length)
 
 
     class TlvsPacketClass(KaitaiStruct):
