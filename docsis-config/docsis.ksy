@@ -121,7 +121,8 @@ types:
       switch-on: tlv_type
       cases:
        'tlv_types::baseline_privacy': tlvs_baseline_privacy
-       'tlv_types::us_packet_class': tlvs_us_packet_class
+       'tlv_types::us_packet_class': tlvs_packet_class
+       'tlv_types::ds_packet_class': tlvs_packet_class
        'tlv_types::snmp_mib_object': tlv_snmp
      if: length > 0
    - id: tlv_empty_value
@@ -134,10 +135,10 @@ types:
      type: tlv_baseline_privacy
      repeat: eos
 
- tlvs_us_packet_class:
+ tlvs_packet_class:
   seq:
    - id: tlvs
-     type: tlv_us_packet_class
+     type: tlv_packet_class
      repeat: eos
 
  tlvs_ip_packet_classifier:
@@ -160,7 +161,7 @@ types:
       cases:
        4: u4be
 
- tlv_us_packet_class:
+ tlv_packet_class:
   seq:
    - id: tlv_type
      type: u1
