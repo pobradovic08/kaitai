@@ -120,19 +120,27 @@ types:
      type:
       switch-on: tlv_type
       cases:
-       'tlv_types::baseline_privacy': tlvs_bpi
+       'tlv_types::baseline_privacy': tlvs_baseline_privacy
+       'tlv_types::us_packet_class': tlvs_us_packet_class
        'tlv_types::snmp_mib_object': tlv_snmp
      if: length > 0
    - id: tlv_empty_value
      type: u1
      if: length == 0
 
- tlvs_bpi:
+ tlvs_baseline_privacy:
   seq:
    - id: tlvs
-     type: tlv_bpi
+     type: tlv_baseline_privacy
      repeat: eos
- tlv_bpi:
+
+ tlvs_us_packet_class:
+  seq:
+   - id: tlvs
+     type: tlv_us_packet_class
+     repeat: eos
+
+ tlv_baseline_privacy:
   seq:
    - id: tlv_type
      type: u1
@@ -145,6 +153,17 @@ types:
       switch-on: length
       cases:
        4: u4be
+
+ tlv_us_packet_class:
+  seq:
+   - id: tlv_type
+     type: u1
+     enum: packet_class
+   - id: length
+     type: u1
+   - id: value
+     size: length
+
  tlv_snmp:
   seq:
    - id: unknown1
