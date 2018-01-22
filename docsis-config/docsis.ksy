@@ -115,6 +115,7 @@ types:
      if: tlv_type == tlv_types::pad
    - id: length
      type: u1
+     if: tlv_type != tlv_types::pad
    - id: tlv_value
      size: length
      type:
@@ -124,10 +125,7 @@ types:
        'tlv_types::us_packet_class': tlvs_packet_class
        'tlv_types::ds_packet_class': tlvs_packet_class
        'tlv_types::snmp_mib_object': tlv_snmp
-     if: length > 0
-   - id: tlv_empty_value
-     type: u1
-     if: length == 0
+     if: tlv_type != tlv_types::pad
 
  tlvs_baseline_privacy:
   seq:
