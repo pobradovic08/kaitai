@@ -33,9 +33,25 @@ enums:
   20: tftp_modem_address
   21: sw_upgrade_server
   22: us_packet_class
-  
+  23: ds_packet_class
+  24: us_service_flow
+  25: ds_service_flow
+  26: phs
+  28: max_classifiers
+  29: global_privacy_enable
+  32: manufacturer_cvc
+  33: cosigner_cvc
+  34: snmpv3_kickstart
+  35: sub_mgmt_control
+  39: docsis20_enable
+  40: enable_test_modes
+  41: ds_channel_list
+  42: multicast_mac_address
+  43: vendor_specific
+  58: sw_upgrade_server6
+  254: mta_config_delimiter  
  
- tlv_bpi_types:
+ baseline_privacy:
   1: auth_timeout
   2: reauth_timeout
   3: auth_grace_time
@@ -46,7 +62,7 @@ enums:
   8: sa_map_wait_timeout
   9: sa_max_max_retries
 
- us_packet_class:
+ packet_class:
   1: classifier_ref
   2: classifier_id
   3: service_flow_ref
@@ -55,7 +71,38 @@ enums:
   6: activation_state
   7: dsc_action
   9: ip_packet_classifier
-  
+  10: llc_packet_classifier
+  11: ieee802_classifier
+  12: pc_ipv6_packet_classification
+  13: pc_cmime_encoding
+  14: s_tag_c_tag_frame_classification
+  15: ieee802ah_packet_classification
+  16: icmpv4_icmpv6_packet_classification
+  17: mpls_classification_encoding
+  43: vendor_specific
+ 
+ ip_packet_classifier:
+  1: ip_tos
+  2: ip_proto
+  3: ip_src_addr
+  4: ip_src_mask
+  5: ip_dst_addr
+  6: ip_dst_mask
+  7: src_port_start
+  8: src_port_end
+  9: dst_port_start
+  10: dst_port_end
+
+ llc_packet_classifier:
+  1: dst_mac_address
+  2: src_mac_address
+  3: ether_type
+
+ ieee802_classifier:
+  1: user_priority
+  2: vlan_id
+
+ 
 
 types:
  tlv:
@@ -89,7 +136,7 @@ types:
   seq:
    - id: tlv_type
      type: u1
-     enum: tlv_bpi_types
+     enum: baseline_privacy
    - id: length
      type: u1
    - id: value
