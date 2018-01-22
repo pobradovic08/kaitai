@@ -140,6 +140,12 @@ types:
      type: tlv_us_packet_class
      repeat: eos
 
+ tlvs_ip_packet_classifier:
+  seq:
+   - id: tlvs
+     type: tlv_ip_packet_classifier
+     repeat: eos
+
  tlv_baseline_privacy:
   seq:
    - id: tlv_type
@@ -159,6 +165,20 @@ types:
    - id: tlv_type
      type: u1
      enum: packet_class
+   - id: length
+     type: u1
+   - id: value
+     size: length
+     type:
+      switch-on: tlv_type
+      cases:
+       'packet_class::ip_packet_classifier': tlvs_ip_packet_classifier
+
+ tlv_ip_packet_classifier:
+  seq:
+   - id: tlv_type
+     type: u1
+     enum: ip_packet_classifier
    - id: length
      type: u1
    - id: value
